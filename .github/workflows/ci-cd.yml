@@ -41,7 +41,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/amd64,linux/arm64 -t your-docker-username/your-image-name:latest .
+          docker buildx build --platform linux/amd64,linux/arm64 -t darshitkc12/website:1.0 .
           # Replace 'your-docker-username' and 'your-image-name' with your Docker Hub/GitHub Container Registry details
 
       - name: Log in to Docker Hub
@@ -49,5 +49,5 @@ jobs:
         # Create 'DOCKER_USERNAME' and 'DOCKER_PASSWORD' secrets in your repository with your Docker Hub credentials
 
       - name: Push Docker image
-        run: docker push your-docker-username/your-image-name:latest
+        run: docker push darshitkc12/website:1.0
         # Replace 'your-docker-username' and 'your-image-name' with your Docker Hub/GitHub Container Registry details
