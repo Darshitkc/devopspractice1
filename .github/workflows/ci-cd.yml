@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name if needed
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x  # Specify the desired Python version
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # Adjust the path to your requirements file if needed
+
+      - name: Run tests
+        run: |
+          python -m unittest discover  # Modify the test command as needed
+
+  build-docker:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: |
+          docker buildx create --use
+          docker buildx build --platform linux/amd64,linux/arm64 -t your-docker-username/your-image-name:latest .
+          # Replace 'your-docker-username' and 'your-image-name' with your Docker Hub/GitHub Container Registry details
+
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        # Create 'DOCKER_USERNAME' and 'DOCKER_PASSWORD' secrets in your repository with your Docker Hub credentials
+
+      - name: Push Docker image
+        run: docker push your-docker-username/your-image-name:latest
+        # Replace 'your-docker-username' and 'your-image-name' with your Docker Hub/GitHub Container Registry details
